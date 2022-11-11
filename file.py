@@ -6,11 +6,6 @@ def input_file(filepath):
           data.append(double_sentences[0])
           data.append(double_sentences[1])
     return data
-
-def output_file(filepath,output_data):
-    with open(filepath, 'w', encoding='utf-8') as file:
-      	for output in output_data:
-        	file.write(f'{output}\n')
          
 def pre_learn_data():
     learns = []
@@ -26,4 +21,9 @@ def pre_learn_data():
 def pre_test_data():
     test_path = "./db/test/STS.input.images.txt"
     return input_file(test_path)
-    
+
+output_filepath = "./db/test/STS.output.images.txt"
+def output_file(output_data):
+    with open(output_filepath, 'w', encoding='utf-8') as file:
+      	for output in output_data:
+        	file.write(f'{output}\n')
