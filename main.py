@@ -1,6 +1,7 @@
 import file
 import pre_pro
 import train_and_test
+import analysis
 
 # データの用意
 learns = file.pre_learn_data()
@@ -18,4 +19,7 @@ output = train_and_test.test(new_tests)
 
 # データの出力
 file.output_file(output)
+
+# データの分析
+analysis.view_analysis()
 

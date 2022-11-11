@@ -3,3 +3,5 @@ __pycache__/
 *.py[cod]
 *$py.class
 word2vec.model
+images/
+db/analysis/
