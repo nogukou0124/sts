@@ -1,1 +1,4 @@
-file.cpython-38.pyc
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
