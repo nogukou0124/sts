@@ -36,7 +36,6 @@ def view_analysis():
 
     plt.scatter(x,y)
     fig.savefig("./images/img.jpg")
-    
 
 
         
