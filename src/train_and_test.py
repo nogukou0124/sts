@@ -1,7 +1,6 @@
-from train_model import w2v
-from gensim.models import KeyedVectors
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+from train_model import w2v
 
 def train(learns):
     w2v.learn_w2v(learns)
