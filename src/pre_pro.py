@@ -15,8 +15,8 @@ def nltk(text):
     
     docs = []
     for sp in tree_tok.span_tokenize(text):
-        s = stemmer.stem(text[sp[0]:sp[1]])
-        # s = text[sp[0]:sp[1]]
+        # s = stemmer.stem(text[sp[0]:sp[1]])
+        s = text[sp[0]:sp[1]]
         docs.append(s)
     return docs
 
