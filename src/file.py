@@ -6,13 +6,21 @@ def input_file(filepath):
           data.append(double_sentences[0])
           data.append(double_sentences[1])
     return data
+
+def gs_file(file_path):
+    data = []
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line in file.read().splitlines():
+          data.append(float(line) / 5)
+    return data
+
          
 def pre_learn_data():
     learns = []
     learn_data = []
     learn_data.append("./db/learn/STS.input.OnWN.txt")
-    learn_data.append("./db/add/STS.input.MSRvid.txt")
-    learn_data.append("./db/add/STS.input.headlines.txt")
+    # learn_data.append("./db/add/STS.input.MSRvid.txt")
+    # learn_data.append("./db/add/STS.input.headlines.txt")
     for learn in learn_data:
         for input in input_file(learn):
             learns.append(input)
