@@ -4,28 +4,33 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM,Embedding
 from sklearn.metrics.pairwise import cosine_similarity
-import pandas as pd
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt 
+from train_model import transformer
+import torch
 
 # 訓練とテスト
-def train_and_test(learns,tests):
+def train_and_test(learns,y_train,tests):
     wv = w2v.get_model()
+    model = transformer.get_model()
     max = max_words(learns,tests)
     x_train = cre_vec_x(learns,wv,max)
     x_train = np.array(x_train)
-    y_train = cre_vec_y(learns,wv)
+    # y_train = cre_vec_y(learns,wv)
+    y_train = cre_vec_y2(y_train,model)
     y_train = np.array(y_train)
     
     print(x_train.shape)
     print(y_train.shape)
 
     model = Sequential()
-    model.add(LSTM(300,input_shape=(x_train.shape[1],x_train.shape[2])))
-    model.add(Dense(300))
+    model.add(LSTM(100,input_shape=(x_train.shape[1],x_train.shape[2])))
+    model.add(Dense(y_train.shape[1]))
     model.compile(loss="mean_squared_error", optimizer="adam")
     
+    print(model.summary)
+    
     print("start train")
-    history = model.fit(x_train,y_train,epochs=100)
+    history = model.fit(x_train,y_train,epochs=200)
     print("finish train")
     
     x_test = cre_vec_x(tests,wv,max)
@@ -71,6 +76,13 @@ def cre_vec_y(learns,wv):
     y_train = []
     for learn in learns:
         y = w2v.get_w2v(learn,wv)
+        y_train.append(y)
+    return y_train
+
+def cre_vec_y2(learns,model):
+    y_train = []
+    for learn in learns:
+        y = model.encode(learn)
         y_train.append(y)
     return y_train
     

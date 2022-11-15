@@ -37,4 +37,5 @@ def train_and_test(tests):
         words2 = get_w2v(doc2,model)
         cos_sim = cosine_similarity(np.array([words1]),np.array([words2]))
         cos_sims.append(cos_sim[0][0])
+    print(cosine_similarity(np.array([model["couch"]]),np.array([model["cow"]])))
     return cos_sims
