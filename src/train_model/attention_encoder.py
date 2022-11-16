@@ -2,7 +2,7 @@ from train_model import w2v
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense
-from keras.layers import LSTM,Embedding
+from keras.layers import LSTM,TimeDistributed,SimpleRNN
 from sklearn.metrics.pairwise import cosine_similarity
 from matplotlib import pyplot as plt 
 from train_model import transformer
@@ -23,8 +23,14 @@ def train_and_test(learns,y_train,tests,y_test):
     print(y_train.shape)
 
     model = Sequential()
-    model.add(LSTM(100,input_shape=(x_train.shape[1],x_train.shape[2])))
+    # model.add(LSTM(100,return_sequences=True,input_shape=(x_train.shape[1],x_train.shape[2])))
+    model.add(LSTM(100,return_sequences=True,input_shape=(x_train.shape[1],x_train.shape[2])))
+    model.add(LSTM(100,return_sequences=False,input_shape=(x_train.shape[1],x_train.shape[2])))
+    # model.add(SimpleRNN(100,return_sequences=True,input_shape=(x_train.shape[1],x_train.shape[2])))
+    # model.add(SimpleRNN(100,return_sequences=True,input_shape=(x_train.shape[1],x_train.shape[2])))
+    # model.add(SimpleRNN(100,return_sequences=False,input_shape=(x_train.shape[1],x_train.shape[2])))
     model.add(Dense(y_train.shape[1]))
+    # model.add(TimeDistributed(Dense(y_train.shape[1])))
     model.compile(loss="mean_squared_error", optimizer="adam")
     
     print(model.summary)

@@ -13,7 +13,7 @@ new_tests = pre_pro.pre_processing(tests)
 # new_tests = tests
 
 # 訓練とテスト
-output = train_and_test.train_and_test(new_learns,learns,new_tests)
+output = train_and_test.train_and_test(new_learns,learns,new_tests,tests)
 
 # データの出力
 file.output_file(output)
