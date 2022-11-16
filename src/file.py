@@ -19,8 +19,8 @@ def pre_learn_data():
     learns = []
     learn_data = []
     learn_data.append("./db/learn/STS.input.OnWN.txt")
-    # learn_data.append("./db/add/STS.input.MSRvid.txt")
-    # learn_data.append("./db/add/STS.input.headlines.txt")
+    learn_data.append("./db/add/STS.input.MSRvid.txt")
+    learn_data.append("./db/add/STS.input.headlines.txt")
     for learn in learn_data:
         for input in input_file(learn):
             learns.append(input)
