@@ -1,19 +1,47 @@
-from sentence_transformers import SentenceTransformer, util 
+from train_model import w2v 
+import torch.nn as nn
+import torch
+from sentence_transformers import SentenceTransformer, util
+import numpy as np
 
 def train_and_test(tests):
-    cos_sims = []
-    model = SentenceTransformer('stsb-xlm-r-multilingual') 
-    it = iter(tests[0:len(tests)])
-    for doc1,doc2 in zip(it,it):
-        words1 = model.encode(doc1)
-        words2 = model.encode(doc2)
-        cos_sim = util.cos_sim(words1, words2)
-        cos_sims.append(float(cos_sim[0][0]))
-    
-    return cos_sims
+    max = max_words(tests)
+    wv = w2v.get_model()
+    x_tests = cre_vec_x(tests,wv,max)
+    x_tests = np.array(x_tests)
+    print(x_tests.shape)
+    x_tests = torch.from_numpy(x_tests)
+    x_tests = x_tests.to(torch.float32)
+    encoder_layer = nn.TransformerEncoderLayer(d_model=300, nhead=5)
+    transformer_encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
+    # out = transformer_encoder(x_tests)
+    # print(out)
 
-def get_model():
-    return SentenceTransformer('stsb-xlm-r-multilingual') 
+def cre_vec_x(learns,wv,max):
+    x_train = []
+    for learn in learns:
+        x_train.append(cre_array(wv,learn,max))
+    return x_train
 
-# model = get_model()
-# print(model.encode("Black and white photo of couch with purse at one end.",convert_to_tensor=True).shape)
+def cre_array(wv,doc,max):
+    arrays = []
+    zero_vec = max - len(doc)
+    for i in range(0,zero_vec):
+        arrays.append(np.zeros(300))
+    for words in doc:
+        arrays.append(cre_w2v(words,wv))
+    return arrays
+
+# word2vecのベクトル生成
+def cre_w2v(word,wv):
+    if word in wv:
+       return wv[word]
+    else:
+       return np.zeros(300)
+
+def max_words(tests):
+    max = 0
+    for test in tests:
+        if max < len(test):
+            max = len(test)      
+    return max
