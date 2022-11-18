@@ -14,6 +14,13 @@ def get_model():
     return KeyedVectors.load_word2vec_format("GoogleNews-vectors-negative300.bin" ,binary=True)
 
 # word2vecのベクトル生成
+def cre_w2v(word,wv):
+    if word in wv:
+       return wv[word]
+    else:
+       return np.zeros(300)
+
+# word2vecのベクトル生成
 def get_w2v(doc,model):
     sum_vec = np.zeros(300)
     word_count = 0

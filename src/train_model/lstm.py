@@ -2,46 +2,71 @@ from train_model import w2v
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense
-from keras.layers import LSTM,Embedding
+from keras.layers import LSTM
 from sklearn.metrics.pairwise import cosine_similarity
 from matplotlib import pyplot as plt 
-from train_model import transformer
-import torch
+from train_model import sentence_bert
+import sys
 
 # 訓練とテスト
-def train_and_test(learns,y_train,tests,y_test):
-    wv = w2v.get_model()
-    model_bert = transformer.get_model()
+def train_and_test(learns,y_train,tests,y_test,trained_data):
+    wv = w2v.get_model() # word2vecモデルの生成
+    model_bert = sentence_bert.get_model() # sentence-bertモデルの生成
+    
+    # 文書の最大単語数
     max = max_words(learns,tests)
+    
+    # 訓練データの生成
     x_train = cre_vec_x(learns,wv,max)
     x_train = np.array(x_train)
-    # y_train = cre_vec_y(learns,wv)
-    y_train = cre_vec_y2(y_train,model_bert)
+    
+    if trained_data == "word2vec":
+        y_train = cre_vec_by_w2v(learns,wv)
+        
+    elif trained_data == "sentence-bert":
+        y_train = cre_vec_by_bert(y_train,model_bert)
+    
+    else:
+        print('please correct trained data', file=sys.stderr)
+        sys.exit(1)     
+    
     y_train = np.array(y_train)
     
     print(x_train.shape)
     print(y_train.shape)
 
+    # モデルの生成
     model = Sequential()
-    model.add(LSTM(100,input_shape=(x_train.shape[1],x_train.shape[2])))
+    model.add(LSTM(100,return_sequences=False,input_shape=(x_train.shape[1],x_train.shape[2])))
     model.add(Dense(y_train.shape[1]))
     model.compile(loss="mean_squared_error", optimizer="adam")
-    
-    print(model.summary)
+    model.summary()
     
     print("start train")
     history = model.fit(x_train,y_train,epochs=100)
     print("finish train")
     
+    # テストデータの生成
     x_test = cre_vec_x(tests,wv,max)
     x_test = np.array(x_test)
     
-    # y_test = cre_vec_y(tests,wv)
-    y_test = cre_vec_y2(y_test,model_bert)
-    y_test = np.array(y_test)
-    print(model.evaluate(x_test,y_test))
+    if trained_data == "word2vec":
+        y_train = cre_vec_by_w2v(learns,wv)
+        
+    elif trained_data == "sentence-bert":
+        y_train = cre_vec_by_bert(y_train,model_bert)
     
+    else:
+        print('please correct trained data', file=sys.stderr)
+        sys.exit(1)     
+    
+    # モデルの評価
+    model.evaluate(x_test,y_test)
+    
+    # 損失関数の表示
     view_loss(history)
+    
+    # テストデータの予測
     predicts = model.predict(x_test)
     print(np.array(predicts).shape)
     cos_sims = []
@@ -62,11 +87,11 @@ def max_words(learns,tests):
             max = len(test)      
     return max
 
-def cre_vec_x(learns,wv,max):
-    x_train = []
-    for learn in learns:
-        x_train.append(cre_array(wv,learn,max))
-    return x_train
+def cre_vec_x(data,wv,max):
+    x_list = []
+    for d in data:
+        x_list.append(cre_array(wv,d,max))
+    return x_list
 
 def cre_array(wv,doc,max):
     arrays = []
@@ -74,30 +99,22 @@ def cre_array(wv,doc,max):
     for i in range(0,zero_vec):
         arrays.append(np.zeros(300))
     for words in doc:
-        arrays.append(cre_w2v(words,wv))
+        arrays.append(w2v.cre_w2v(words,wv))
     return arrays
 
-def cre_vec_y(learns,wv):
+def cre_vec_by_w2v(learns,wv):
     y_train = []
     for learn in learns:
         y = w2v.get_w2v(learn,wv)
         y_train.append(y)
     return y_train
 
-def cre_vec_y2(learns,model):
+def cre_vec_by_bert(learns,model):
     y_train = []
     for learn in learns:
         y = model.encode(learn)
         y_train.append(y)
     return y_train
-    
-
-# word2vecのベクトル生成
-def cre_w2v(word,wv):
-    if word in wv:
-       return wv[word]
-    else:
-       return np.zeros(300)
 
 # 損失関数のグラフ表示
 def view_loss(history):
