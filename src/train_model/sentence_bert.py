@@ -7,6 +7,7 @@ def train_and_test(tests):
     for doc1,doc2 in zip(it,it):
         words1 = model.encode(doc1)
         words2 = model.encode(doc2)
+        # print(words1)
         cos_sim = util.cos_sim(words1, words2)
         cos_sims.append(float(cos_sim[0][0]))
     
