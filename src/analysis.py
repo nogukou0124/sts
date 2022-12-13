@@ -1,5 +1,4 @@
 from matplotlib import pyplot as plt
-import file
 
 def view_analysis():
     data_list = []

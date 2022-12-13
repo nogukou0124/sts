@@ -3,8 +3,8 @@ import pre_pro
 import train_and_test
 import analysis
 
-USE_TRAIN_MODEL = "rnn"
-USE_TRAINED_DATA = "word2vec"
+USE_TRAIN_MODEL = "transformer"
+USE_TRAINED_DATA = "sentence-bert"
 
 # データの用意
 learns = file.pre_learn_data()

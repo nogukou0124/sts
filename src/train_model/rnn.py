@@ -21,10 +21,10 @@ def train_and_test(learns,y_train,tests,y_test,trained_data):
     x_train = np.array(x_train)
     
     if trained_data == "word2vec":
-        y_train = cre_vec_by_w2v(learns,wv)
+        y_train = cre_vec_by_w2v(tests,wv)
         
     elif trained_data == "sentence-bert":
-        y_train = cre_vec_by_bert(y_train,model_bert)
+        y_train = cre_vec_by_bert(y_test,model_bert)
     
     else:
         print('please correct trained data', file=sys.stderr)
